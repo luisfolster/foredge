@@ -1,4 +1,28 @@
 services:
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-foredge}:${POSTGRES_PASSWORD:-change-this-local-password}@db:5432/${POSTGRES_DB:-foredge}
+      PORT: 3100
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-60}
+      WEBHOOK_SIGNING_KEY: ${WEBHOOK_SIGNING_KEY:-}
+      WEBHOOK_ALLOWED_HOSTS: ${WEBHOOK_ALLOWED_HOSTS:-}
+    ports:
+      - "127.0.0.1:3100:3100"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3100/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
   db:
     image: postgres:17-alpine
     environment:
@@ -15,6 +39,24 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+  test-db:
+    image: postgres:17-alpine
+    profiles: [test]
+    environment:
+      POSTGRES_DB: foredge_test
+      POSTGRES_USER: foredge
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-this-local-password}
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   postgres_data:
+  postgres_test_data:

@@ -5,8 +5,12 @@
   "scripts": {
     "dev:api": "pnpm --filter @foredge/api dev",
     "dev:docs": "pnpm --filter @foredge/docs dev",
-    "build": "pnpm --filter @foredge/api build && pnpm --filter @foredge/docs build",
+    "db:migrate": "pnpm --filter @foredge/api db:migrate",
+    "key:create": "pnpm --filter @foredge/api key:create",
+    "key:revoke": "pnpm --filter @foredge/api key:revoke",
+    "build": "pnpm --filter @foredge/api build && pnpm --filter @foredge/api contract:export && pnpm --filter @foredge/docs build",
     "test": "pnpm --filter @foredge/api test",
+    "smoke": "pnpm --filter @foredge/api build && node --env-file-if-exists=.env scripts/smoke.mjs",
     "typecheck": "pnpm --filter @foredge/api typecheck",
     "lint": "oxlint api/src api/test",
     "format:check": "prettier --check ."
@@ -16,7 +20,7 @@
     "oxlint": "^1.87.0",
     "prettier": "^3.9.9",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2",
+    "typescript": "^5.9.3",
     "vitepress": "^1.6.4",
     "vitest": "^5.0.3"
   }
