@@ -1,0 +1,23 @@
+{
+  "name": "foredge",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "dev:api": "pnpm --filter @foredge/api dev",
+    "dev:docs": "pnpm --filter @foredge/docs dev",
+    "build": "pnpm --filter @foredge/api build && pnpm --filter @foredge/docs build",
+    "test": "pnpm --filter @foredge/api test",
+    "typecheck": "pnpm --filter @foredge/api typecheck",
+    "lint": "oxlint api/src api/test",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "oxlint": "^1.87.0",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitepress": "^1.6.4",
+    "vitest": "^5.0.3"
+  }
+}
